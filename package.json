@@ -1,0 +1,21 @@
+```json id="package-pro"
+{
+  "name": "portfolio-pro",
+  "version": "1.0.0",
+  "description": "Portfolio full stack Octavio",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "author": "Octavio",
+  "license": "MIT",
+  "dependencies": {
+    "next": "14.0.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "sqlite3": "^5.1.6",
+    "sqlite": "^4.1.2"
+  }
+}
