@@ -7,32 +7,29 @@ export default function Register(){
   const [name,setName] = useState("");
   const [email,setEmail] = useState("");
   const [password,setPassword] = useState("");
-  const [avatar,setAvatar] = useState(null);
 
-  function handleImage(e){
-    const file = e.target.files[0];
-    setAvatar(file);
-  }
-
-  function register(){
+  async function register(){
 
     if(!name || !email || !password){
       alert("Remplis tous les champs ❌");
       return;
     }
 
-    // simulation stockage
-    const user = {
-      name,
-      email,
-      password
-    };
+    const res = await fetch("/api/register",{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json"
+      },
+      body: JSON.stringify({name,email,password})
+    });
 
-    localStorage.setItem("user", JSON.stringify(user));
+    const data = await res.json();
 
-    alert("Compte créé 🔥");
+    alert(data.message);
 
-    window.location.href="/login";
+    if(data.message.includes("créé")){
+      window.location.href="/login";
+    }
   }
 
   return(
@@ -56,12 +53,6 @@ export default function Register(){
         onChange={(e)=>setPassword(e.target.value)}
       />
 
-      <input 
-        type="file"
-        accept="image/*"
-        onChange={handleImage}
-      />
-
       <button onClick={register}>
         S'inscrire
       </button>
@@ -74,4 +65,4 @@ export default function Register(){
 
     </div>
   );
-      }
+          }
