@@ -1,4 +1,4 @@
-import { getDB } from "@/lib/db";
+import { getDB } from "../../../lib/db";
 
 export async function POST(req){
 
@@ -23,4 +23,4 @@ export async function POST(req){
     message:"Connexion réussie 🔥",
     user
   });
-      }
+}
