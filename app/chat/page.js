@@ -8,6 +8,7 @@ export default function Chat(){
   const [msg,setMsg] = useState("");
   const [messages,setMessages] = useState([]);
 
+  // vérifier utilisateur + charger messages
   useEffect(()=>{
     const data = localStorage.getItem("user");
 
@@ -17,30 +18,46 @@ export default function Chat(){
       setUser(JSON.parse(data));
     }
 
-    // charger anciens messages
-    const saved = localStorage.getItem("messages");
-    if(saved){
-      setMessages(JSON.parse(saved));
-    }
+    loadMessages();
+
+    const interval = setInterval(loadMessages, 2000);
+
+    return ()=> clearInterval(interval);
+
   },[]);
 
-  function sendMessage(){
-    if(!msg) return;
+  // envoyer message
+  async function sendMessage(){
 
-    const newMsg = {
-      user: user.name,
-      text: msg
-    };
+    if(!msg || !user) return;
 
-    const newList = [...messages, newMsg];
+    await fetch("/api/chat",{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json"
+      },
+      body: JSON.stringify({
+        user: user.name,
+        message: msg
+      })
+    });
 
-    setMessages(newList);
-    localStorage.setItem("messages", JSON.stringify(newList));
     setMsg("");
+    loadMessages();
   }
 
-  function addEmoji(emoji){
-    setMsg(msg + emoji);
+  // charger messages
+  async function loadMessages(){
+
+    const res = await fetch("/api/chat");
+    const data = await res.json();
+
+    setMessages(data.messages);
+  }
+
+  // ajouter emoji
+  function addEmoji(e){
+    setMsg(msg + e);
   }
 
   if(!user) return null;
@@ -48,22 +65,24 @@ export default function Chat(){
   return(
     <div className="container">
 
-      <h1>💬 Chat</h1>
+      <h1>💬 Chat Global</h1>
 
       <div className="chat-box">
+
         {messages.map((m,i)=>(
           <div key={i} className="message">
-            <b>{m.user}:</b> {m.text}
+            <b>{m.user}:</b> {m.message}
           </div>
         ))}
+
       </div>
 
       <div className="input-box">
 
-        <input 
+        <input
           value={msg}
           onChange={(e)=>setMsg(e.target.value)}
-          placeholder="Écris un message..."
+          placeholder="Écris ton message..."
         />
 
         <button onClick={sendMessage}>Envoyer</button>
@@ -85,4 +104,4 @@ export default function Chat(){
 
     </div>
   );
-            }
+                      }
