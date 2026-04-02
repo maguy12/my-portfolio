@@ -1,73 +1,26 @@
-"use client";
+import { getDB } from "../../../lib/db.js";
 
-import { useState } from "react";
+export async function POST(req){
 
-export default function Login(){
+  const { email, password } = await req.json();
 
-  const [email,setEmail] = useState("");
-  const [password,setPassword] = useState("");
-
-  async function login(){
-
-    console.log("CLICK LOGIN");
-
-    if(!email || !password){
-      alert("Remplis les champs ❌");
-      return;
-    }
-
-    try{
-      const res = await fetch("/api/login",{
-        method:"POST",
-        headers:{
-          "Content-Type":"application/json"
-        },
-        body: JSON.stringify({email,password})
-      });
-
-      const data = await res.json();
-
-      console.log(data);
-
-      if(data.user){
-        localStorage.setItem("user", JSON.stringify(data.user));
-        window.location.href="/dashboard";
-      }else{
-        alert(data.message);
-      }
-
-    }catch(err){
-      console.error(err);
-      alert("Erreur serveur ❌");
-    }
+  if(!email || !password){
+    return Response.json({message:"Champs manquants ❌"});
   }
 
-  return(
-    <div className="container">
+  const db = await getDB();
 
-      <h1>🔐 Connexion</h1>
+  const user = await db.collection("users").findOne({
+    email,
+    password
+  });
 
-      <input
-        placeholder="Email"
-        onChange={(e)=>setEmail(e.target.value)}
-      />
+  if(!user){
+    return Response.json({message:"Identifiants incorrects ❌"});
+  }
 
-      <input
-        type="password"
-        placeholder="Mot de passe"
-        onChange={(e)=>setPassword(e.target.value)}
-      />
-
-      <button onClick={login}>
-        Connexion
-      </button>
-
-      <p>Pas encore de compte ?</p>
-
-      <a href="/register">
-        <button>S'inscrire</button>
-      </a>
-
-    </div>
-  );
-          }
+  return Response.json({
+    message:"Connexion réussie 🔥",
+    user
+  });
+}
