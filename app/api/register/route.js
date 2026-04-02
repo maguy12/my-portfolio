@@ -1,78 +1,26 @@
-"use client";
+import { getDB } from "../../../lib/db.js";
 
-import { useState } from "react";
+export async function POST(req){
 
-export default function Register(){
+  const { name, email, password } = await req.json();
 
-  const [name,setName] = useState("");
-  const [email,setEmail] = useState("");
-  const [password,setPassword] = useState("");
-
-  async function register(){
-
-    console.log("CLICK REGISTER");
-
-    if(!name || !email || !password){
-      alert("Remplis tous les champs ❌");
-      return;
-    }
-
-    try{
-      const res = await fetch("/api/register",{
-        method:"POST",
-        headers:{
-          "Content-Type":"application/json"
-        },
-        body: JSON.stringify({name,email,password})
-      });
-
-      const data = await res.json();
-
-      console.log(data);
-
-      alert(data.message);
-
-      if(data.message.includes("créé")){
-        window.location.href="/login";
-      }
-
-    }catch(err){
-      console.error(err);
-      alert("Erreur serveur ❌");
-    }
+  if(!name || !email || !password){
+    return Response.json({message:"Champs manquants ❌"});
   }
 
-  return(
-    <div className="container">
+  const db = await getDB();
 
-      <h1>📝 Inscription</h1>
+  const exist = await db.collection("users").findOne({email});
 
-      <input
-        placeholder="Nom"
-        onChange={(e)=>setName(e.target.value)}
-      />
+  if(exist){
+    return Response.json({message:"Email déjà utilisé ❌"});
+  }
 
-      <input
-        placeholder="Email ou numéro"
-        onChange={(e)=>setEmail(e.target.value)}
-      />
+  await db.collection("users").insertOne({
+    name,
+    email,
+    password
+  });
 
-      <input
-        type="password"
-        placeholder="Mot de passe"
-        onChange={(e)=>setPassword(e.target.value)}
-      />
-
-      <button onClick={register}>
-        S'inscrire
-      </button>
-
-      <p>Déjà un compte ?</p>
-
-      <a href="/login">
-        <button>Se connecter</button>
-      </a>
-
-    </div>
-  );
-        }
+  return Response.json({message:"Compte créé 🔥"});
+}
