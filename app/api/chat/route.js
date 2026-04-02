@@ -1,12 +1,13 @@
-import { getDB } from "../../../lib/db";
+import { getDB } from "../../../lib/db.js";
 
 export async function GET(){
 
   const db = await getDB();
 
-  const messages = await db.all(
-    "SELECT * FROM messages ORDER BY id ASC"
-  );
+  const messages = await db
+    .collection("messages")
+    .find()
+    .toArray();
 
   return Response.json({messages});
 }
@@ -21,10 +22,11 @@ export async function POST(req){
 
   const db = await getDB();
 
-  await db.run(
-    "INSERT INTO messages(user,message) VALUES(?,?)",
-    [user,message]
-  );
+  await db.collection("messages").insertOne({
+    user,
+    message,
+    created_at: new Date()
+  });
 
   return Response.json({message:"Message envoyé 🔥"});
 }
