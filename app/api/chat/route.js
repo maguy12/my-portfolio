@@ -1,18 +1,8 @@
-import { getDB } from "@/lib/db";
+import { getDB } from "../../../lib/db";
 
 export async function GET(){
 
   const db = await getDB();
-
-  // créer table si pas existe
-  await db.exec(`
-    CREATE TABLE IF NOT EXISTS messages(
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      user TEXT,
-      message TEXT,
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    )
-  `);
 
   const messages = await db.all(
     "SELECT * FROM messages ORDER BY id ASC"
@@ -20,7 +10,6 @@ export async function GET(){
 
   return Response.json({messages});
 }
-
 
 export async function POST(req){
 
