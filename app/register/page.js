@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 export default function Register(){
 
@@ -10,25 +11,35 @@ export default function Register(){
 
   async function register(){
 
+    console.log("CLICK REGISTER");
+
     if(!name || !email || !password){
       alert("Remplis tous les champs ❌");
       return;
     }
 
-    const res = await fetch("/api/register",{
-      method:"POST",
-      headers:{
-        "Content-Type":"application/json"
-      },
-      body: JSON.stringify({name,email,password})
-    });
+    try{
+      const res = await fetch("/api/register",{
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json"
+        },
+        body: JSON.stringify({name,email,password})
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    alert(data.message);
+      console.log(data);
 
-    if(data.message.includes("créé")){
-      window.location.href="/login";
+      alert(data.message);
+
+      if(data.message.includes("créé")){
+        window.location.assign("/login");
+      }
+
+    }catch(err){
+      console.error(err);
+      alert("Erreur serveur ❌");
     }
   }
 
@@ -37,32 +48,32 @@ export default function Register(){
 
       <h1>📝 Inscription</h1>
 
-      <input 
+      <input
         placeholder="Nom"
         onChange={(e)=>setName(e.target.value)}
       />
 
-      <input 
-        placeholder="Email ou numéro"
+      <input
+        placeholder="Email"
         onChange={(e)=>setEmail(e.target.value)}
       />
 
-      <input 
+      <input
         type="password"
         placeholder="Mot de passe"
         onChange={(e)=>setPassword(e.target.value)}
       />
 
-      <button onClick={register}>
+      <button type="button" onClick={register}>
         S'inscrire
       </button>
 
       <p>Déjà un compte ?</p>
 
-      <a href="/login">
-        <button>Se connecter</button>
-      </a>
+      <Link href="/login">
+        <button type="button">Se connecter</button>
+      </Link>
 
     </div>
   );
-          }
+    }
