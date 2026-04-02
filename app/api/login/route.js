@@ -1,26 +1,73 @@
-import { getDB } from "../../../lib/db";
+"use client";
 
-export async function POST(req){
+import { useState } from "react";
 
-  const { email, password } = await req.json();
+export default function Login(){
 
-  if(!email || !password){
-    return Response.json({message:"Champs manquants ❌"});
+  const [email,setEmail] = useState("");
+  const [password,setPassword] = useState("");
+
+  async function login(){
+
+    console.log("CLICK LOGIN");
+
+    if(!email || !password){
+      alert("Remplis les champs ❌");
+      return;
+    }
+
+    try{
+      const res = await fetch("/api/login",{
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json"
+        },
+        body: JSON.stringify({email,password})
+      });
+
+      const data = await res.json();
+
+      console.log(data);
+
+      if(data.user){
+        localStorage.setItem("user", JSON.stringify(data.user));
+        window.location.href="/dashboard";
+      }else{
+        alert(data.message);
+      }
+
+    }catch(err){
+      console.error(err);
+      alert("Erreur serveur ❌");
+    }
   }
 
-  const db = await getDB();
+  return(
+    <div className="container">
 
-  const user = await db.get(
-    "SELECT * FROM users WHERE email = ? AND password = ?",
-    [email,password]
+      <h1>🔐 Connexion</h1>
+
+      <input
+        placeholder="Email"
+        onChange={(e)=>setEmail(e.target.value)}
+      />
+
+      <input
+        type="password"
+        placeholder="Mot de passe"
+        onChange={(e)=>setPassword(e.target.value)}
+      />
+
+      <button onClick={login}>
+        Connexion
+      </button>
+
+      <p>Pas encore de compte ?</p>
+
+      <a href="/register">
+        <button>S'inscrire</button>
+      </a>
+
+    </div>
   );
-
-  if(!user){
-    return Response.json({message:"Identifiants incorrects ❌"});
-  }
-
-  return Response.json({
-    message:"Connexion réussie 🔥",
-    user
-  });
-}
+          }
