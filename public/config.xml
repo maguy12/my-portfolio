@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application>
+    <name>Portfolio Octavio</name>
+    <version>1.0.0</version>
+    <author>Octavio</author>
+
+    <features>
+        <feature>Authentication</feature>
+        <feature>Chat</feature>
+        <feature>Calculator</feature>
+        <feature>Snake Game</feature>
+    </features>
+
+    <settings>
+        <theme>dark</theme>
+        <language>fr</language>
+    </settings>
+</application>
