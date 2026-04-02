@@ -105,20 +105,48 @@ a{
   display:flex;
   justify-content:space-between;
   align-items:center;
-  background:#1e293b;
-  padding:10px;
+  background:#020617;
+  padding:10px 20px;
   border-bottom:1px solid #334155;
+  animation:fadeIn 1s ease;
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-weight:bold;
+}
+
+.logo img{
+  width:40px;
+  height:40px;
+  border-radius:50%;
+}
+
+.nav-links{
+  display:flex;
+  gap:15px;
 }
 
 .nav-links a{
-  margin:0 10px;
   color:white;
-  font-weight:bold;
+  text-decoration:none;
+  padding:5px 10px;
+  border-radius:5px;
   transition:0.3s;
 }
 
 .nav-links a:hover{
-  color:#3b82f6;
+  background:#1e293b;
+}
+
+.active{
+  background:#3b82f6;
+}
+
+.navbar button{
+  background:red;
 }
 
 /* ===== DASHBOARD ===== */
@@ -220,8 +248,7 @@ canvas{
   }
 
   .nav-links{
-    display:flex;
     flex-wrap:wrap;
     justify-content:center;
   }
-  }
+}
