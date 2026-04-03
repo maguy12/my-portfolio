@@ -1,20 +1,21 @@
 {
-  "name": "portfolio-pro",
+  "name": "portfolio-octavio",
   "version": "1.0.0",
-  "description": "Portfolio full stack Octavio",
-  "main": "index.js",
+  "private": true,
+  "description": "Portfolio développeur avec chat, login, register, calculatrice et snake",
+  "author": "Octavio",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start"
   },
-  "author": "Octavio",
-  "license": "MIT",
   "dependencies": {
-    "next": "14.0.0",
+    "next": "14.2.3",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "sqlite3": "^5.1.6",
-    "sqlite": "^4.1.2"
+    "mongodb": "^6.5.0"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }
